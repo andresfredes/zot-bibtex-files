@@ -9,3 +9,5 @@ This translator:
 
 ## Usage
 Copy BibTexFiles.js into Zotero/translators/ then restart Zotero
+
+"BibTeX and Files" will now appear as an option in the Export dialog box
