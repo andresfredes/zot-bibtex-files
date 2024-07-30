@@ -18,7 +18,7 @@
 		"exportTags": true,
 		"useJournalAbbreviation": false
 	},
-	"lastUpdated": "2024-07-12 10:30:00"
+	"lastUpdated": "2024-07-30 13:00:00"
 }
 
 function debug(msg) {
@@ -704,26 +704,27 @@ function doExport() {
 		}
 		
 		// Tag handling - include collection names as additional tags
-		let tagString = "";
+		const tags = new Set([]);
 		if (item.collections) {
-			const coll = new Set;
 			for (const collID of item.collections) {
 				const collectionNames = collections.path[collID].split('/')
 				for (const name of collectionNames) {
-					coll.add(name);
+					tags.add(name);
 				}
-			}
-			for (const c of coll) {
-				tagString += ", " + c;
 			}
 		}
 		if (item.tags && item.tags.length) {
 			for (var i in item.tags) {
-				var tag = item.tags[i];
-				tagString += ", "+tag.tag;
+				tags.add(item.tags[i].tag);
 			}
 		}
-		if (tagString !== "") {
+		debug(tags);
+		if (tags.size > 0) {
+			let tagString = "";
+			for (const tag of tags) {
+				tagString += ", " + tag;
+			}
+			debug(`keywords: ${tagString.substring(2)}`);
 			writeField("keywords", tagString.substring(2));
 		}
 		

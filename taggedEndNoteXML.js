@@ -16,7 +16,7 @@
 	},
 	"inRepository": false,
 	"translatorType": 3,
-	"lastUpdated": "2024-07-29 15:00:00"
+	"lastUpdated": "2024-07-30 13:00:00"
 }
 
 function debug(msg) {
@@ -866,27 +866,27 @@ function doExport() {
 				break;
 				case 'keywords':
 					var keywords = doc.createElement("keywords");
-					let hasKeywords = false;
+					let uniqueKeywords = new Set([]);
 					if (item.tags.length > 0) {
-						hasKeywords = true;
 						for (var i = 0; i < item.tags.length; i++) {
-							mapProperty(keywords, "keyword", item.tags[i].tag);
+							uniqueKeywords.add(item.tags[i].tag);
 						}
 					}
 					if (item.collections.length > 0) {
-						hasKeywords = true;
-						const coll = new Set;
 						for (const collID of item.collections) {
 							const collectionNames = collections.path[collID].split('/')
 							for (const name of collectionNames) {
-								coll.add(name);
+								uniqueKeywords.add(name);
 							}
 						}
-						for (const c of coll) {
-							mapProperty(keywords, "keyword", c);
-						}
 					}
-					record.appendChild(keywords);
+					if (uniqueKeywords.size > 0) {
+						debug(`keywords: ${[...uniqueKeywords].join(' ')}`)
+						for (const kw of uniqueKeywords) {
+							mapProperty(keywords, "keyword", kw);
+						}
+						record.appendChild(keywords);
+					}
 				break;
 				case 'research-notes':
 					if (item.notes && item.notes.length && Zotero.getOption("exportNotes")) {
