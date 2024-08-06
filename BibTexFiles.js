@@ -63,8 +63,9 @@ class Collections {
             collections = ['']; // if the item is not in a collection, save it in the root.
 		const ret = [];
         for (const att of attachments) {
-            if (!att.defaultPath)
-                continue;
+            if (!att.defaultPath) {
+				continue;
+			}
 			const temp = [];
             const [base, ext] = this.split(this.clean(att.filename));
             const subdir = att.contentType === 'text/html' ? base : '';
@@ -643,6 +644,9 @@ function doExport() {
 					creatorString = creator.lastName;
 				}
 				
+				if (!creatorString) {
+					creatorString = "";
+				}
 				creatorString = escapeSpecialCharacters(creatorString);
 				
 				if (creator.fieldMode == true) { // fieldMode true, assume corporate author
@@ -742,15 +746,16 @@ function doExport() {
 		if (Zotero.getOption('exportFileData')) {
 			// Export files in hierarchical structure and update attachment path to suit
 			const attPaths = collections.save(item);
+			const exportable = item.attachments.filter((i) => i.defaultPath)
 
-			if (item.attachments.length !== attPaths.length ) {
+			if (exportable.length !== attPaths.length ) {
 				throw new Error("Number of attachments and path arrays do not match");
 			}
 
 			let attachmentString = "";
-			for (let i in item.attachments) {
+			for (let i in exportable) {
 				for (const attPath of attPaths[i]) {
-					let attachment = item.attachments[i];
+					let attachment = exportable[i];
 					const title = cleanFilePath(attachment.title);
 					const path = cleanFilePath(attPath);
 					attachmentString += ";" + encodeFilePathComponent(title)
